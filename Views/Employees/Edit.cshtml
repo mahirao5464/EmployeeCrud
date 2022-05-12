@@ -1,0 +1,85 @@
+﻿@model EmployeeCrud.Models.Employee
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Employee</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="EmployeeCode" class="control-label"></label>
+                <input type="text" value="@Model.EmployeeCode" disabled class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmailId" class="control-label"></label>
+                <input asp-for="EmailId" class="form-control" />
+                <span asp-validation-for="EmailId" class="text-danger"></span>
+            </div>
+            <div id="phoneSection">
+            
+            @for (var i = 0; i < Model.PhoneNumbers?.Count; i++)
+            {
+               <div class="form-group">
+                <label asp-for="PhoneNumbers[i].PhoneNumber" class="control-label"></label>
+                <input asp-for="PhoneNumbers[i].PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumbers[i].PhoneNumber" class="text-danger"></span>
+                @Html.HiddenFor(el=>el.PhoneNumbers[i].PhoneId)
+                </div> 
+            }
+            </div>
+             <input type="button" id="addPhone" class="btn btn-info" value="Add"/>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function() {
+    var currentIndex = @(Model.PhoneNumbers?.Count);
+        var phoneHtml = `
+        <div class="form-group">
+                <label class="control-label" for="PhoneNumbers_{idx}__PhoneNumber">PhoneNumber</label>
+                <input class="form-control" type="tel" id="PhoneNumbers_{idx}__PhoneNumber" name="PhoneNumbers[{idx}].PhoneNumber">
+                <span class="text-danger" data-valmsg-for="PhoneNumbers[{idx}].PhoneNumber" style='display:none;'>this is required field</span>
+                
+            </div>
+        `;
+   
+    $("#addPhone").click(function(){
+    $("#phoneSection").append(phoneHtml.replaceAll('{idx}',currentIndex));
+        currentIndex++;
+    });
+});
+        
+    </script>
+}
